@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loveQuiz: document.getElementById('screen-love-quiz'),
     home: document.getElementById('screen-home'),
     mainCard: document.getElementById('screen-main-card'),
-    album: document.getElementById('screen-album'),
     bouquet: document.getElementById('screen-bouquet'),
     letter: document.getElementById('screen-letter')
   };
@@ -690,6 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   yesBtn.addEventListener('click', () => {
+    noBtn.style.display = 'none';
     if (noBtn.parentElement === appContainer) {
       const quizButtons = document.querySelector('.quiz-buttons');
       if (quizButtons) {
