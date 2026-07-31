@@ -113,10 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Footer Navigation Buttons
-  document.getElementById('go-to-album').addEventListener('click', () => {
-    transitionTo('album');
-  });
-
   document.getElementById('go-to-bouquet').addEventListener('click', () => {
     transitionTo('bouquet');
   });
@@ -124,201 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('go-to-letter').addEventListener('click', () => {
     transitionTo('letter');
   });
-
-
-  // --- STACK CAROUSEL LOGIC ---
-  const cardStack = document.getElementById('card-stack');
-  let cards = Array.from(cardStack.querySelectorAll('.carousel-card'));
-  const indicators = Array.from(document.querySelectorAll('.indicator-dot'));
-  let activeIndex = 0;
-
-  // Render/arrange card stack initial positioning
-  function arrangeStack() {
-    cards.forEach((card, index) => {
-      // Arrangement styling based on position in cards array
-      gsap.killTweensOf(card);
-      
-      let transformValue = '';
-      let zIndex = cards.length - index;
-      let opacity = 1;
-      let scale = 1 - (index * 0.05);
-      let translateY = index * 12;
-      let rotation = index === 0 ? 0 : index === 1 ? 3 : -3;
-
-      if (index === 0) {
-        card.style.pointerEvents = 'auto'; // only allow interaction on top card
-      } else {
-        card.style.pointerEvents = 'none';
-      }
-
-      gsap.to(card, {
-        scale: scale,
-        y: translateY,
-        rotation: rotation,
-        opacity: opacity,
-        zIndex: zIndex,
-        duration: 0.4,
-        ease: 'power2.out'
-      });
-    });
-
-    // Update active indicators
-    indicators.forEach((ind, idx) => {
-      if (idx === activeIndex) {
-        ind.classList.add('active');
-      } else {
-        ind.classList.remove('active');
-      }
-    });
-  }
-
-  arrangeStack();
-
-  // Slide top card away (Next Card)
-  function slideNext() {
-    const topCard = cards[0];
-    if (!topCard) return;
-
-    // Animate top card throwing away to the right
-    gsap.to(topCard, {
-      x: 320,
-      rotation: 20,
-      opacity: 0,
-      scale: 0.9,
-      duration: 0.4,
-      ease: 'power2.in',
-      onComplete: () => {
-        // Move top card to the bottom of the cards array
-        cards.push(cards.shift());
-        
-        // Reset topCard position off-screen on the bottom
-        gsap.set(topCard, { x: 0, y: 30, rotation: 0, opacity: 0, zIndex: 1 });
-        
-        // Update active index
-        activeIndex = (activeIndex + 1) % cards.length;
-        
-        // Re-arrange stack
-        arrangeStack();
-      }
-    });
-  }
-
-  // Bring card back from bottom (Prev Card)
-  function slidePrev() {
-    // Take bottom card and make it top card
-    const bottomCard = cards[cards.length - 1];
-    if (!bottomCard) return;
-
-    // Shift bottom card to front of array
-    cards.unshift(cards.pop());
-    
-    // Position it off-screen to the left to prepare slide in
-    gsap.set(bottomCard, {
-      x: -320,
-      rotation: -20,
-      opacity: 0,
-      zIndex: cards.length
-    });
-
-    // Update active index
-    activeIndex = (activeIndex - 1 + cards.length) % cards.length;
-
-    // Rearrange stack first (will animate other cards down)
-    arrangeStack();
-
-    // Slide in the new top card
-    gsap.to(bottomCard, {
-      x: 0,
-      y: 0,
-      rotation: 0,
-      opacity: 1,
-      scale: 1,
-      duration: 0.45,
-      ease: 'power2.out'
-    });
-  }
-
-  document.getElementById('next-btn').addEventListener('click', slideNext);
-  document.getElementById('prev-btn').addEventListener('click', slidePrev);
-
-  // Click on dots directly to navigate
-  indicators.forEach(indicator => {
-    indicator.addEventListener('click', () => {
-      const targetSlide = parseInt(indicator.dataset.slide);
-      let limit = 0;
-      while (activeIndex !== targetSlide && limit < 5) {
-        slideNext();
-        limit++;
-      }
-    });
-  });
-
-  // Swipe support for Carousel (Mobile & Desktop drag)
-  let startX = 0;
-  let isDragging = false;
-
-  cardStack.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-  });
-
-  cardStack.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const diff = e.touches[0].clientX - startX;
-    
-    // Drag visual effect on top card
-    if (cards[0]) {
-      gsap.set(cards[0], { x: diff, rotation: diff * 0.05 });
-    }
-  });
-
-  cardStack.addEventListener('touchend', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    const diff = e.changedTouches[0].clientX - startX;
-
-    if (diff > 80) {
-      slidePrev();
-    } else if (diff < -80) {
-      slideNext();
-    } else {
-      // Snap back to top position
-      if (cards[0]) {
-        gsap.to(cards[0], { x: 0, rotation: 0, duration: 0.3, ease: 'power2.out' });
-      }
-    }
-  });
-
-  // Desktop Drag Swipe support
-  cardStack.addEventListener('mousedown', (e) => {
-    startX = e.clientX;
-    isDragging = true;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    const diff = e.clientX - startX;
-    if (cards[0]) {
-      gsap.set(cards[0], { x: diff, rotation: diff * 0.05 });
-    }
-  });
-
-  document.addEventListener('mouseup', (e) => {
-    if (!isDragging) return;
-    isDragging = false;
-    const diff = e.clientX - startX;
-
-    if (diff > 80) {
-      slidePrev();
-    } else if (diff < -80) {
-      slideNext();
-    } else {
-      if (cards[0]) {
-        gsap.to(cards[0], { x: 0, rotation: 0, duration: 0.3, ease: 'power2.out' });
-      }
-    }
-  });
-
 
   // --- HEART BURST ANIMATION ---
   const finalHeart = document.getElementById('final-heart');
@@ -861,12 +662,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const appContainer = document.querySelector('.app-container');
 
   function moveNoButton() {
+    if (noBtn.parentElement !== appContainer) {
+      appContainer.appendChild(noBtn);
+    }
     const containerWidth = appContainer.clientWidth;
     const containerHeight = appContainer.clientHeight;
     const btnWidth = noBtn.offsetWidth || 110;
     const btnHeight = noBtn.offsetHeight || 52;
     
-    const padding = 24;
+    const padding = 20;
     const maxX = containerWidth - btnWidth - padding;
     const maxY = containerHeight - btnHeight - padding;
     
@@ -876,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
     noBtn.style.position = 'absolute';
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
-    noBtn.style.zIndex = '999';
+    noBtn.style.zIndex = '9999';
   }
 
   noBtn.addEventListener('mouseenter', moveNoButton);
@@ -886,6 +690,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   yesBtn.addEventListener('click', () => {
+    if (noBtn.parentElement === appContainer) {
+      const quizButtons = document.querySelector('.quiz-buttons');
+      if (quizButtons) {
+        quizButtons.appendChild(noBtn);
+      }
+      noBtn.style.position = '';
+      noBtn.style.left = '';
+      noBtn.style.top = '';
+    }
     transitionTo('home');
   });
 
