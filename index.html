@@ -17,8 +17,54 @@
 
     <div class="screens-wrapper">
 
+      <!-- SCREEN 0: Canvas Garden Intro -->
+      <div id="screen-intro-garden" class="screen active" style="padding: 0; overflow: hidden; background: #000;">
+        <canvas id="garden-canvas"></canvas>
+        <div class="garden-overlay-ui">
+          <h1 class="garden-title heading-serif" style="font-size: 2rem;">Laranya's Garden 🌸</h1>
+          <p class="garden-subtitle">Tap anywhere to plant a flower...</p>
+          <div class="garden-counter">💕 <span id="intro-flower-count">0</span> flowers planted</div>
+        </div>
+        <button id="intro-garden-continue" class="action-btn" style="display: none; position: absolute; bottom: 40px; z-index: 10;">
+          Continue ➔
+        </button>
+      </div>
+
+      <!-- SCREEN 0a: Love Quiz Screen -->
+      <div id="screen-love-quiz" class="screen" style="justify-content: center; align-items: center; background-color: var(--bg-color);">
+        <div class="quiz-box">
+          <!-- Cute Peach Cat illustration via SVG -->
+          <svg viewBox="0 0 100 100" style="width: 120px; height: 120px; margin-bottom: 12px;">
+            <!-- Cat head -->
+            <ellipse cx="50" cy="55" rx="30" ry="24" fill="#faf8f0" stroke="#7c6a9f" stroke-width="2.5" />
+            <!-- Ears -->
+            <path d="M26 38c-3-8 3-12 8-6M74 38c3-8-3-12-8-6" fill="#faf8f0" stroke="#7c6a9f" stroke-width="2.5" />
+            <!-- Inner ears -->
+            <path d="M28 36c-1-5 2-8 5-4M72 36c1-5-2-8-5-4" fill="#eac3cd" />
+            <!-- Eyes -->
+            <circle cx="38" cy="52" r="3" fill="#2d2438" />
+            <circle cx="62" cy="52" r="3" fill="#2d2438" />
+            <!-- Blushing cheeks -->
+            <ellipse cx="32" cy="59" rx="4.5" ry="3" fill="#eac3cd" opacity="0.8" />
+            <ellipse cx="68" cy="59" rx="4.5" ry="3" fill="#eac3cd" opacity="0.8" />
+            <!-- Mouth -->
+            <path d="M47 59c1 1 2 2 3 2s2-1 3-2" stroke="#2d2438" stroke-width="1.5" stroke-linecap="round" fill="none" />
+            <!-- Heart balloon string -->
+            <path d="M50 79c0 8-5 12-5 18" stroke="#7c6a9f" stroke-width="1.5" fill="none" />
+            <!-- Heart balloon -->
+            <path d="M50 32c-6-8-14-4-14 4 0 6 10 12 14 16 4-4 14-10 14-16 0-8-8-12-14-4z" fill="#e06d75" stroke="#7c6a9f" stroke-width="1.5" />
+          </svg>
+          <h2 class="heading-serif" style="font-size: 1.8rem; text-align: center; color: var(--text-main); margin-bottom: 2px;">Do you love me? 🥺</h2>
+          <p class="sub-script" style="font-size: 1.6rem; text-align: center; color: var(--accent-color); margin-bottom: 24px;">choose wisely...</p>
+          <div class="quiz-buttons">
+            <button id="yes-btn">Yes! ♡</button>
+            <button id="no-btn">No</button>
+          </div>
+        </div>
+      </div>
+
       <!-- SCREEN 1: Home / Envelope screen -->
-      <div id="screen-home" class="screen active">
+      <div id="screen-home" class="screen">
         
         <div class="pill-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="color: var(--accent-color);">
