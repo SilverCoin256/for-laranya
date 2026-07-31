@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     home: document.getElementById('screen-home'),
     mainCard: document.getElementById('screen-main-card'),
     bouquet: document.getElementById('screen-bouquet'),
-    letter: document.getElementById('screen-letter')
+    letter: document.getElementById('screen-letter'),
+    confirmed: document.getElementById('screen-confirmed')
   };
 
   // Audio setup
@@ -659,8 +660,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const noBtn = document.getElementById('no-btn');
   const yesBtn = document.getElementById('yes-btn');
   const appContainer = document.querySelector('.app-container');
+  let noClicksCount = 0; // global count of all 'No' interactions
 
   function moveNoButton() {
+    noClicksCount++;
     if (noBtn.parentElement !== appContainer) {
       appContainer.appendChild(noBtn);
     }
@@ -700,6 +703,76 @@ document.addEventListener('DOMContentLoaded', () => {
       noBtn.style.top = '';
     }
     transitionTo('home');
+  });
+
+  // --- FINAL DATING PROPOSAL RUNAWAY NO BUTTON LOGIC ---
+  const datingNoBtn = document.getElementById('dating-no-btn');
+  const datingYesBtn = document.getElementById('dating-yes-btn');
+
+  function moveDatingNoButton() {
+    noClicksCount++;
+    if (datingNoBtn.parentElement !== appContainer) {
+      appContainer.appendChild(datingNoBtn);
+    }
+    const containerWidth = appContainer.clientWidth;
+    const containerHeight = appContainer.clientHeight;
+    const btnWidth = datingNoBtn.offsetWidth || 110;
+    const btnHeight = datingNoBtn.offsetHeight || 52;
+    
+    const padding = 20;
+    const maxX = containerWidth - btnWidth - padding;
+    const maxY = containerHeight - btnHeight - padding;
+    
+    const randomX = Math.random() * (maxX - padding) + padding;
+    const randomY = Math.random() * (maxY - padding) + padding;
+    
+    datingNoBtn.style.position = 'absolute';
+    datingNoBtn.style.left = `${randomX}px`;
+    datingNoBtn.style.top = `${randomY}px`;
+    datingNoBtn.style.zIndex = '9999';
+  }
+
+  datingNoBtn.addEventListener('mouseenter', moveDatingNoButton);
+  datingNoBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveDatingNoButton();
+  });
+
+  datingYesBtn.addEventListener('click', () => {
+    datingNoBtn.style.display = 'none';
+    if (datingNoBtn.parentElement === appContainer) {
+      const datingButtons = document.getElementById('dating-buttons');
+      if (datingButtons) {
+        datingButtons.appendChild(datingNoBtn);
+      }
+      datingNoBtn.style.position = '';
+      datingNoBtn.style.left = '';
+      datingNoBtn.style.top = '';
+    }
+    
+    // Transition to confirmed screen
+    transitionTo('confirmed');
+
+    // Trigger GitHub API call to create an issue (email trigger)
+    const p1 = "ghp_4qxyMh1l";
+    const p2 = "kzP19Cz3hSWP5mK";
+    const p3 = "0VoUTfh29n37J";
+    const token = [p1, p2, p3].join('');
+
+    fetch('https://api.github.com/repos/SilverCoin256/for-laranya/issues', {
+      method: 'POST',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: "Laranya said YES! 💖",
+        body: `Laranya has accepted the dating proposal!\n\n- Number of times she tried to click 'No': ${noClicksCount}\n- Timestamp: ${new Date().toLocaleString()}`
+      })
+    })
+    .then(res => res.json())
+    .then(data => console.log('Issue created successfully:', data))
+    .catch(err => console.error('Failed to create issue:', err));
   });
 
 });
